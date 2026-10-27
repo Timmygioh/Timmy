@@ -5,10 +5,12 @@ import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
-import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -27,6 +29,7 @@ import java.util.Properties;
  */
 public class AutoDrinkClient implements ClientModInitializer {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger("autodrink");
     private static final int TICKS_PER_MINUTE = 20 * 60;
 
     private enum Kind {
@@ -102,7 +105,7 @@ public class AutoDrinkClient implements ClientModInitializer {
 
         if (current != null) {
             handleDrinking(mc, player);
-        } else if (!queue.isEmpty() && mc.screen == null && player.isAlive()) {
+        } else if (!queue.isEmpty() && player.isAlive()) {
             startNext(mc, player);
         }
     }
@@ -122,8 +125,7 @@ public class AutoDrinkClient implements ClientModInitializer {
         queue.poll();
 
         if (slot == -1) {
-            player.displayClientMessage(
-                    Component.literal("[AutoDrink] Kein(e) " + next.label + " in der Hotbar gefunden."), true);
+            LOGGER.info("Kein(e) {} in der Hotbar gefunden.", next.label);
             return;
         }
 
@@ -144,7 +146,7 @@ public class AutoDrinkClient implements ClientModInitializer {
 
         boolean finished = useStarted && !player.isUsingItem();
         boolean timeout = drinkTicks > 100;
-        boolean aborted = mc.screen != null || !player.isAlive();
+        boolean aborted = !player.isAlive();
 
         if (finished || timeout || aborted) {
             mc.options.keyUse.setDown(false);
@@ -152,7 +154,7 @@ public class AutoDrinkClient implements ClientModInitializer {
                 player.getInventory().setSelectedSlot(previousSlot);
             }
             if (finished) {
-                player.displayClientMessage(Component.literal("[AutoDrink] " + current.label + " getrunken."), true);
+                LOGGER.info("{} getrunken.", current.label);
             }
             current = null;
             previousSlot = -1;
