@@ -9,6 +9,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
@@ -211,6 +212,9 @@ public class AutoDrinkClient implements ClientModInitializer {
         useTicks = 0;
         useStarted = false;
         mc.options.keyUse.setDown(true);
+        // Item direkt benutzen, egal was im Fadenkreuz ist (z. B. ein Armor Stand).
+        // Ohne das wuerde ein Rechtsklick den Armor Stand anklicken statt zu essen.
+        mc.gameMode.useItem(player, InteractionHand.MAIN_HAND);
     }
 
     private void handleUsing(Minecraft mc, LocalPlayer player) {
