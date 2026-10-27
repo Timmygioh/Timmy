@@ -1,0 +1,30 @@
+{
+	"schemaVersion": 1,
+	"id": "auto-drink",
+	"version": "${version}",
+	"name": "Auto Drink",
+	"description": "Automatischer Zyklus: Ominous Bottle und Milch trinken, bei Hunger Golden Apple essen.",
+	"authors": [
+		"you"
+	],
+	"license": "CC0-1.0",
+	"icon": "assets/auto-drink/icon.png",
+	"environment": "client",
+	"entrypoints": {
+		"client": [
+			"de.autodrink.client.AutoDrinkClient"
+		],
+		"modmenu": [
+			"de.autodrink.client.AutoDrinkModMenu"
+		]
+	},
+	"depends": {
+		"fabricloader": ">=0.19.0",
+		"minecraft": "~26.2",
+		"java": ">=25",
+		"fabric-api": "*"
+	},
+	"suggests": {
+		"modmenu": "*"
+	}
+}
